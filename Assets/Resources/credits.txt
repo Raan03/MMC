@@ -1,0 +1,14 @@
+title|MMC;
+state|Alpha;
+show image|{Raan03 Corporate Logo};
+image|{MMC};
+caption|Matching Memory Cardgame;
+developer|Raan03 Software;
+publisher|Raan03 Software;
+distributor|Raan03 Software;
+series|Si.So.HW;
+engine|Unity3D;
+platforms|PC, Android;
+released|2014;
+copyright|(c) Raan03 Software -- All rights reserved.;
+genre|Casual;

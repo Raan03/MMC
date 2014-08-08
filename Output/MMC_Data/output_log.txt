@@ -1,0 +1,17 @@
+Initialize engine version: 4.5.2f1 (9abb1b59b47c)
+GfxDevice: creating device client; threaded=1
+Direct3D:
+    Version:  Direct3D 11.0 [level 10.0]
+    Renderer: NVIDIA GeForce GTS 250 (ID=0x615)
+    Vendor:   NVIDIA
+    VRAM:     488 MB
+Begin MonoManager ReloadAssembly
+Platform assembly: D:\Projects\Unity\MMC\Output\MMC_Data\Managed\UnityEngine.dll (this message is harmless)
+Loading D:\Projects\Unity\MMC\Output\MMC_Data\Managed\UnityEngine.dll into Unity Child Domain
+Platform assembly: D:\Projects\Unity\MMC\Output\MMC_Data\Managed\Assembly-CSharp.dll (this message is harmless)
+Loading D:\Projects\Unity\MMC\Output\MMC_Data\Managed\Assembly-CSharp.dll into Unity Child Domain
+- Completed reload, in  0.058 seconds
+<RI> Initializing input.
+<RI> Input initialized.
+desktop: 1024x768 75Hz; virtual: 1024x768 at 0,0
+Platform assembly: D:\Projects\Unity\MMC\Output\MMC_Data\Managed\System.Core.dll (this message is harmless)
