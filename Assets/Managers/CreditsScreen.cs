@@ -1,21 +1,22 @@
 ﻿using UnityEngine;
-using System.Collections;
-using System.IO;
 using System.Collections.Generic;
 using System.Linq;
+using SH = Classes.Shared;
 
-public class CreditsScreen : MonoBehaviour
-{		
+namespace Managers
+{
+
+	public class CreditsScreen : MonoBehaviour
+	{
 		// we want to know what percentage to use for padding
-		public int PaddingPercentage = 5;
+		public int paddingPercentage = 5;
 		
 		// calculate the absolute pixels
-		private int paddingHeight = Mathf.CeilToInt (Screen.height * 0.05f);
-		private int paddingWidth = Mathf.CeilToInt (Screen.width * 0.05f);
+		readonly Dictionary<string,int> _paddingResolution = SH.CalculatePaddingInPixels(paddingPercentage);
 		
 		//
-		private List<List<string>> credits = new List<List<string>> ();
-		private List<Rect> creditRectangle = new List<Rect> ();
+		List<List<string>> _credits = new List<List<string>>();
+		List<Rect> _creditRectangle = new List<Rect>();
 		
 		// the speed of scrolling our credits
 		public float creditSpeed;
@@ -24,51 +25,87 @@ public class CreditsScreen : MonoBehaviour
 		/// <summary>
 		/// On startup we need to load our credits in memory, position them and create rectangles for eye sight
 		/// </summary>
-		void Start ()
+		void Start()
 		{
-				// load our creditsFile and put it in a list
-				TextAsset creditsFile = (TextAsset)Resources.Load ("credits", typeof(TextAsset));
-				List<string> tempList = creditsFile.text.Split (';').ToList ();
-				tempList.RemoveAll(x => string.IsNullOrEmpty(x));
-				foreach (string x in tempList) {
-						List<string> y = x.Split ('|').ToList ();
-						if (!y.All (z => string.IsNullOrEmpty (z))) {
-								credits.Add (y);
-						}
+			// load our creditsFile and put it in a list
+			TextAsset creditsFile = (TextAsset)Resources.Load("credits", typeof(TextAsset));
+			List<string> tempList = creditsFile.text.Split(';').ToList();
+			tempList.RemoveAll(x => string.IsNullOrEmpty(x));
+			foreach (string x in tempList)
+			{
+				List<string> y = x.Split('|').ToList();
+				if (!y.All(z => string.IsNullOrEmpty(z)))
+				{
+					_credits.Add(y);
 				}
+			}
 				
-				// additionally also add some rectangles for better looking credits
-				for (int i = 0; i<credits.Count; i++) {
-						creditRectangle.Add (new Rect (0, (Screen.height / 2) + (30 * i), Screen.width, Screen.height));
-				}
+			// additionally also add some rectangles for better looking credits
+			for (int i = 0; i < _credits.Count; i++)
+			{
+				_creditRectangle.Add(new Rect(0, (Screen.height / 2) + (30 * i), Screen.width, Screen.height));
+			}
 		}
-	
+
 		/// <summary>
 		/// This will scroll our credits
 		/// </summary>
-		void OnGUI ()
+		void OnGUI()
 		{
-				// add styles to it, let it scroll upwards
-				for (int i = 0; i < credits.Count; i++) {
+			SH.RenderBackGround();
+			// add styles to it, let it scroll upwards
+			for (int i = 0; i < _credits.Count; i++)
+			{
 
-						GUIStyle leftStyle = new GUIStyle (GUI.skin.label);
-						leftStyle.alignment = TextAnchor.MiddleLeft;
-						leftStyle.padding = new RectOffset (paddingWidth, paddingWidth, paddingHeight, paddingHeight);
+				GUIStyle leftStyle = new GUIStyle(GUI.skin.label);
+				LayoutLeftStyle(leftStyle);
 
-						GUIStyle rightStyle = new GUIStyle (GUI.skin.label);
-						rightStyle.alignment = TextAnchor.MiddleRight;
-						rightStyle.richText = true;
-						rightStyle.padding = new RectOffset (paddingWidth, paddingWidth, paddingHeight, paddingHeight);
+				GUIStyle rightStyle = new GUIStyle(GUI.skin.label);
+				LayoutRightStyle(rightStyle);
 
-						GUI.Label (creditRectangle [i], credits [i] [0].ToUpper (), leftStyle);
-						GUI.Label (creditRectangle [i], credits [i] [1].ToUpperInvariant (), rightStyle);
+				GUI.Label(_creditRectangle[i], _credits[i][0].ToUpper(), leftStyle);
+				GUI.Label(_creditRectangle[i], _credits[i][1].ToLower(), rightStyle);
 						
-						Rect tempRect = creditRectangle [i];
-						tempRect.y = tempRect.y - creditSpeed;
-						creditRectangle [i] = tempRect;
-				}
-		var last = creditRectangle.Last ();
-		if (creditRectangle.Last ().y < 0 - (Screen.height))
-						Application.LoadLevel (0);
+				Rect tempRect = _creditRectangle[i];
+				tempRect.y = tempRect.y - creditSpeed * Time.deltaTime;
+				_creditRectangle[i] = tempRect;
+			}
+			var last = _creditRectangle.Last();
+			if (_creditRectangle.Last().y < 0 - (Screen.height))
+				Application.LoadLevel(0);
 		}
+
+		/// <summary>
+		/// Seperated for better reading
+		/// </summary>
+		/// <param name="leftStyle">Left style.</param>
+		void LayoutLeftStyle(GUIStyle leftStyle)
+		{
+			leftStyle.alignment = TextAnchor.MiddleLeft;
+			leftStyle.normal.textColor = Color.black;
+			leftStyle.padding = new RectOffset(
+				_paddingResolution["Left"], 
+				_paddingResolution["Right"], 
+				_paddingResolution["Top"], 
+				_paddingResolution["Bottom"]);
+		}
+
+		/// <summary>
+		/// Seperated for better reading
+		/// </summary>
+		/// <param name="rightStyle">Right style.</param>
+		void LayoutRightStyle(GUIStyle rightStyle)
+		{
+			rightStyle.alignment = TextAnchor.MiddleRight;
+			rightStyle.font = Resources.Load<Font>("AlexBrush");
+			rightStyle.fontSize = 25;
+			rightStyle.richText = true;
+			rightStyle.normal.textColor = Color.black;
+			rightStyle.padding = new RectOffset(
+				_paddingResolution["Left"], 
+				_paddingResolution["Right"], 
+				_paddingResolution["Top"], 
+				_paddingResolution["Bottom"]);
+		}
+	}
 }
