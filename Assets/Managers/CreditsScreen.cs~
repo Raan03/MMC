@@ -12,7 +12,7 @@ namespace Managers
         public int paddingPercentage = 5;
 		
         // calculate the absolute pixels
-        readonly Dictionary<string,int> _paddingResolution = SH.CalculatePaddingInPixels(paddingPercentage);
+        Dictionary<string,int> _paddingResolution;
 		
         //
         List<List<string>> _credits = new List<List<string>>();
@@ -31,6 +31,8 @@ namespace Managers
             TextAsset creditsFile = (TextAsset)Resources.Load("credits", typeof(TextAsset));
             List<string> tempList = creditsFile.text.Split(';').ToList();
             tempList.RemoveAll(x => string.IsNullOrEmpty(x));
+
+            _paddingResolution = SH.CalculatePaddingInPixels(paddingPercentage);
             foreach (string x in tempList)
             {
                 List<string> y = x.Split('|').ToList();
@@ -63,12 +65,12 @@ namespace Managers
                 GUIStyle rightStyle = new GUIStyle(GUI.skin.label);
                 LayoutRightStyle(rightStyle);
 
-                GUI.Label(_creditRectangle[i], _credits[i][0].ToUpper(), leftStyle);
-                GUI.Label(_creditRectangle[i], _credits[i][1].ToLower(), rightStyle);
+                GUI.Label(_creditRectangle [i], _credits [i] [0].ToUpper(), leftStyle);
+                GUI.Label(_creditRectangle [i], _credits [i] [1].ToLower(), rightStyle);
 						
-                Rect tempRect = _creditRectangle[i];
+                Rect tempRect = _creditRectangle [i];
                 tempRect.y = tempRect.y - creditSpeed * Time.deltaTime;
-                _creditRectangle[i] = tempRect;
+                _creditRectangle [i] = tempRect;
             }
             var last = _creditRectangle.Last();
             if (_creditRectangle.Last().y < 0 - (Screen.height))
@@ -84,10 +86,10 @@ namespace Managers
             leftStyle.alignment = TextAnchor.MiddleLeft;
             leftStyle.normal.textColor = Color.black;
             leftStyle.padding = new RectOffset(
-                _paddingResolution["Left"], 
-                _paddingResolution["Right"], 
-                _paddingResolution["Top"], 
-                _paddingResolution["Bottom"]);
+				_paddingResolution ["Left"], 
+				_paddingResolution ["Right"], 
+				_paddingResolution ["Top"], 
+				_paddingResolution ["Bottom"]);
         }
 
         /// <summary>
@@ -102,10 +104,10 @@ namespace Managers
             rightStyle.richText = true;
             rightStyle.normal.textColor = Color.black;
             rightStyle.padding = new RectOffset(
-                _paddingResolution["Left"], 
-                _paddingResolution["Right"], 
-                _paddingResolution["Top"], 
-                _paddingResolution["Bottom"]);
+				_paddingResolution ["Left"], 
+				_paddingResolution ["Right"], 
+				_paddingResolution ["Top"], 
+				_paddingResolution ["Bottom"]);
         }
     }
 }

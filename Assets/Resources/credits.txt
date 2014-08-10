@@ -1,5 +1,5 @@
 title|MMC*;
-codename|Berta;
+codename|Bertha;
 state|Alpha;
 caption|Matching Memory Cardgame;
 developer|Raan03 Software;
