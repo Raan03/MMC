@@ -81,35 +81,37 @@ namespace Managers
         {
             Debug.Log(string.Format("RenderPictures: percentage: {0} ", 
                                     _remainingPercentage));
+            int heightMargin = 5;
             // 5% of Screen width
-            int barWidth = Mathf.CeilToInt(Screen.width * 0.05f);
+            float maxBarWidth = Screen.width * 0.05f;
             // 90% of screen height
-            int barHeight = Mathf.CeilToInt(Screen.height * 0.9f);
+            float maxBarHeight = Screen.height * (1 - (2 * heightMargin * 0.01f));
+            // bottom = screenwidh - (barheight + margin)
+            float actualBottom = Screen.height - (Screen.height * heightMargin * 0.01f);
+
 
             // get 1/100th for picture
-            int imageHeight = Mathf.CeilToInt(barHeight * 0.01f);
+            float imageHeight = maxBarHeight * 0.01f;
 
             Texture2D actualImage;
 
             GUIStyle labelStyle = new GUIStyle(GUI.skin.label);
             labelStyle.alignment = TextAnchor.MiddleCenter;
 
-            Color oldColor = GUI.color;
-
             if (_remainingPercentage > 80)
             {
                 actualImage = _spareTime;
-                GUI.color = Color.black;
+                labelStyle.normal.textColor = Color.black;
             } else
             {
                 if (_remainingTime > 20)
                 {
                     actualImage = _moderateTime;
-                    GUI.color = Color.white;
+                    labelStyle.normal.textColor = Color.white;
                 } else
                 {
                     actualImage = _shortTime;
-                    GUI.color = Color.black;
+                    labelStyle.normal.textColor = Color.black;
                 }
             }
             
@@ -117,21 +119,27 @@ namespace Managers
             // minus the image loop we already displayed
             // e.g. first one (at bottom:
             // screenheight - 1 times the height of image
-            float actualHeight = (_remainingPercentage * imageHeight);
 
-            GUI.DrawTexture(new Rect(Screen.width - barWidth,
-                                     Screen.height - barHeight,
-                                     barWidth,
+            // note: we want the bar occupying 90% of height
+            // means: at 100 percent, 90% height
+            // but the bar must shrink DOWN
+            // so top position will change
+            // at 100%, we must be at 5% from top
+            // at 0% we must be at 95% from top
+
+            float actualHeight = (_remainingPercentage * imageHeight);
+            float actualTop = (actualBottom - actualHeight);
+
+            GUI.DrawTexture(new Rect(Screen.width - maxBarWidth,
+                                     actualTop,
+                                     maxBarWidth,
                                      actualHeight)
                             , actualImage);
-            GUI.Label(new Rect(Screen.width - barWidth,
-                               Screen.height - barHeight,
-                               barWidth,
+            GUI.Label(new Rect(Screen.width - maxBarWidth,
+                               actualTop,
+                               maxBarWidth,
                                actualHeight)
-                      , _remainingPercentage.ToString(), labelStyle);
-            
-            // restore our default colorscheme
-            GUI.color = oldColor;
+                      , string.Format("{0}%", _remainingPercentage), labelStyle);
 
             // I can imagine this (old) code being horribly inefficient/slow!
             /*for (int i = 0; i<_remainingPercentage; i++)

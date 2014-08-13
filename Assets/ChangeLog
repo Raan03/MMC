@@ -1,6 +1,14 @@
 2014-08-13  Ranu Annaert  <raan03@gmail.com>
 
 	* Managers\ClockScreen.cs:
+	  * updated bar rendering logic
+
+	* Managers\ClockScreen.cs~:
+	  
+
+2014-08-13  Ranu Annaert  <raan03@gmail.com>
+
+	* Managers\ClockScreen.cs:
 	* Managers\ClockScreen.cs~:
 	  
 
