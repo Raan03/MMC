@@ -5,7 +5,9 @@ using SH = Classes.Shared;
 
 namespace Managers
 {
-
+    /// <summary>
+    /// Our self made credits screen
+    /// </summary>
     public class CreditsScreen : MonoBehaviour
     {
         // we want to know what percentage to use for padding
@@ -14,8 +16,9 @@ namespace Managers
         // calculate the absolute pixels
         Dictionary<string,int> _paddingResolution;
 		
-        //
+        //the text ofcourse
         List<List<string>> _credits = new List<List<string>>();
+        //used for the credits layout
         List<Rect> _creditRectangle = new List<Rect>();
 		
         // the speed of scrolling our credits
@@ -86,10 +89,10 @@ namespace Managers
             leftStyle.alignment = TextAnchor.MiddleLeft;
             leftStyle.normal.textColor = Color.black;
             leftStyle.padding = new RectOffset(
-				_paddingResolution ["Left"], 
-				_paddingResolution ["Right"], 
-				_paddingResolution ["Top"], 
-				_paddingResolution ["Bottom"]);
+                _paddingResolution ["Left"], 
+                _paddingResolution ["Right"], 
+                _paddingResolution ["Top"], 
+                _paddingResolution ["Bottom"]);
         }
 
         /// <summary>
@@ -104,10 +107,10 @@ namespace Managers
             rightStyle.richText = true;
             rightStyle.normal.textColor = Color.black;
             rightStyle.padding = new RectOffset(
-				_paddingResolution ["Left"], 
-				_paddingResolution ["Right"], 
-				_paddingResolution ["Top"], 
-				_paddingResolution ["Bottom"]);
+                _paddingResolution ["Left"], 
+                _paddingResolution ["Right"], 
+                _paddingResolution ["Top"], 
+                _paddingResolution ["Bottom"]);
         }
     }
 }

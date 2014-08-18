@@ -21,7 +21,7 @@ namespace Managers
         // the name of our backsidePicture
         public string backSideCard = "picture";
         // how many matches did we already make?
-        private int _matchesMade = 0;
+        int _matchesMade = 0;
 
         // how many sets do we have? Known limitation of Free Unity -- you
         // cannot access the resource folder at runtime as
@@ -56,7 +56,7 @@ namespace Managers
                 for (int j = 0; j < columns; j++)
                 {
                     int someNumber = Random.Range(0, _aCards.Count);
-                    _aGrid[i, j] = _aCards[someNumber];
+                    _aGrid [i, j] = _aCards [someNumber];
                     _aCards.RemoveAt(someNumber);
                 }
             }
@@ -99,23 +99,21 @@ namespace Managers
 
                 for (int j = 0; j < columns; j++)
                 {
-                    CA card = _aGrid[i, j];
+                    CA card = _aGrid [i, j];
                     string img;
                     if (card.isMatched)
                     {
                         // replace our string image number with 
                         // MatchPerCard + 1
                         string image = card.img.Substring(0, card.img.Length - 1)
-                        + (matchesPerCard + 1);
+                            + (matchesPerCard + 1);
                         img = image;
-                    }
-                    else
+                    } else
                     {
                         if (card.isFaceUp)
                         {
                             img = card.img;
-                        }
-                        else
+                        } else
                         {
                             img = backSideCard;
                         }
@@ -123,9 +121,9 @@ namespace Managers
 
                     GUI.enabled = !card.isMatched;
                     if (GUILayout.Button((Texture2D)Resources.Load(img, 
-                            typeof(Texture2D)),
-                        GUILayout.Width(cardWidth), 
-                        GUILayout.Height(cardHeight)))
+							                   typeof(Texture2D)),
+						                   GUILayout.Width(cardWidth), 
+						                   GUILayout.Height(cardHeight)))
                     {
                         if (playerCanClick)
                         {
@@ -158,21 +156,20 @@ namespace Managers
 
                     yield return new WaitForSeconds(1.5f);
 
-                    if (MatchingCards(_cardsFlipped[1].id, _cardsFlipped[0].id))
+                    if (MatchingCards(_cardsFlipped [1].id, _cardsFlipped [0].id))
                     {
-                        _cardsFlipped[0].isMatched = true;
-                        _cardsFlipped[1].isMatched = true;
+                        _cardsFlipped [0].isMatched = true;
+                        _cardsFlipped [1].isMatched = true;
 
                         _matchesMade++;
                         if (_matchesMade >= matchesNeedToWin)
                         {
                             playerHasWon = true;
                         }
-                    }
-                    else
+                    } else
                     {
-                        _cardsFlipped[0].isFaceUp = false;
-                        _cardsFlipped[1].isFaceUp = false;                 
+                        _cardsFlipped [0].isFaceUp = false;
+                        _cardsFlipped [1].isFaceUp = false;                 
                     }
 
             
@@ -191,16 +188,16 @@ namespace Managers
         bool MatchingCards(string left, string right)
         {
             bool leftMatch = left.StartsWith(
-                        right.Substring(0, 2), 
-                        System.StringComparison.CurrentCultureIgnoreCase
-                    );
+				                          right.Substring(0, 2), 
+				                          System.StringComparison.CurrentCultureIgnoreCase
+            );
 
             if (leftMatch)
             {
                 bool rightMatch = left.EndsWith(
-                          right.Substring(right.Length - 1, 1),
-                          System.StringComparison.CurrentCultureIgnoreCase
-                      );
+					                              right.Substring(right.Length - 1, 1),
+					                              System.StringComparison.CurrentCultureIgnoreCase
+                );
                 if (!rightMatch)
                 {
                     return true;
@@ -231,16 +228,16 @@ namespace Managers
                 for (int j = 0; j < matchesPerCard; j++)
                 {
                     int someNumber = Random.Range(0, pictureParts.Count);
-                    string missingPart = pictureParts[someNumber];
+                    string missingPart = pictureParts [someNumber];
 
                     pictureParts.RemoveAt(someNumber);
 
                     string imageName = string.Format("picture-{0}{1}",
-                            (i + 1), 
-                            missingPart);
+						                                  (i + 1), 
+						                                  missingPart);
                     string imageId = string.Format("{0}{1}", 
-                          i, 
-                          missingPart);
+						                                i, 
+						                                missingPart);
 
                     card = new CA(imageName, imageId);
                     _aCards.Add(card);
@@ -269,18 +266,18 @@ namespace Managers
             float halfPromptHeight = winPromptHeight / 2;
 
             GUI.BeginGroup(new Rect(halfScreenWidth - halfPromptWidth,
-                    halfScreenHeight - halfPromptHeight,
-                    winPromptWidth, winPromptHeight));
+					halfScreenHeight - halfPromptHeight,
+					winPromptWidth, winPromptHeight));
             GUI.Box(new Rect(0, 0, winPromptWidth, winPromptHeight),
-                "We have a winner!");
+				"We have a winner!");
 
             int buttonWidth = 80;
             int buttonHeight = 20;
 
             if (GUI.Button(new Rect(halfPromptWidth - (buttonWidth / 2),
-                    halfPromptHeight - (buttonHeight / 2),
-                    buttonWidth, buttonHeight),
-                "Credits"
+					             halfPromptHeight - (buttonHeight / 2),
+					             buttonWidth, buttonHeight),
+				             "Credits"
             ))
             {
                 Application.LoadLevel(2);

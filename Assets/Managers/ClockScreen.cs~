@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
-using System.Collections;
-using SH = Classes.Shared;
 using GS = Managers.GameScreen;
+using SH = Classes.Shared;
 
 namespace Managers
 {
@@ -11,29 +10,41 @@ namespace Managers
         Texture2D _moderateTime;
         Texture2D _shortTime;
         bool _isPaused = false;
-        // in seconds
+        // start time in seconds
         float _startTime;
-        // in seconds
+        // remaining time in seconds
         float _remainingTime;
         float _remainingPercentage;
+        // clockWidth in pixels
         float _clockWidth;
+        // clockHeight in pixels
         float _clockHeight;
-        // Use this for initialization
+
+        /// <summary>
+        /// What to do when we fire up for first time?
+        /// </summary>
         void Start()
         {
             guiText.color = Color.black;
+            // startTime can be 120 for now, for debugging purposes
             _startTime = 120.0f;
 
+            // we assign the images of our bar
+            // spareTime = more than enough time left (>80%)
+            // moderateTime = we might hurry up a little
+            // shortTime = faster, faster! (<20%)
             _spareTime = (Texture2D)Resources.Load("white", 
-                                                   typeof(Texture2D));
+				typeof(Texture2D));
             _moderateTime = (Texture2D)Resources.Load("black", 
-                                                      typeof(Texture2D));
+				typeof(Texture2D));
             _shortTime = (Texture2D)Resources.Load("red", 
-                                                   typeof(Texture2D));
+				typeof(Texture2D));
 
         }
-	
-        // Update is called once per frame
+
+        /// <summary>
+        /// Ticks on every tick
+        /// </summary>
         void Update()
         {
             if (!_isPaused)
@@ -43,12 +54,23 @@ namespace Managers
             }
         }
 
+        /// <summary>
+        /// On each tick that needs a renderer
+        /// </summary>
         void OnGUI()
         {
-            RenderPictures();
+            RenderClockBar();
         }
+
+        /// <summary>
+        /// our CountDown module
+        /// </summary>
         void DoCountDown()
         {
+            // 1) we need to subtract time & update the percentage
+            // 2) if time is up, we stop counting down
+            // 3) we need to show the time
+
             _remainingTime = _startTime - Time.time;
             _remainingPercentage = Mathf.CeilToInt((_remainingTime / _startTime) * 100);
             if (_remainingTime < 0)
@@ -60,11 +82,17 @@ namespace Managers
             ShowTime();
         }
 
+        /// <summary>
+        /// Switch the clock countdown
+        /// </summary>
         void ToggleClock()
         {
             _isPaused = !_isPaused;
         }
 
+        /// <summary>
+        /// Renders our time in hh:mm:ss
+        /// </summary>
         void ShowTime()
         {
             int _minutes;
@@ -72,15 +100,17 @@ namespace Managers
             string timeString;
             _minutes = (int)_remainingTime / 60;
             _seconds = (int)_remainingTime % 60;
+            // D2 = will show us 2 digits
             timeString = string.Format("{0:D2}:{1:D2}", _minutes, _seconds);
             guiText.text = timeString;
 
         }
 
-        void RenderPictures()
+        /// <summary>
+        /// Renders the pictures.
+        /// </summary>
+        void RenderClockBar()
         {
-            Debug.Log(string.Format("RenderPictures: percentage: {0} ", 
-                                    _remainingPercentage));
             int heightMargin = 5;
             // 5% of Screen width
             float maxBarWidth = Screen.width * 0.05f;
@@ -98,6 +128,9 @@ namespace Managers
             GUIStyle labelStyle = new GUIStyle(GUI.skin.label);
             labelStyle.alignment = TextAnchor.MiddleCenter;
 
+            //TODO eliminate the "magic" numbers
+            //TODO textcolor must be put somewhere with the magic 
+            // numbers as well
             if (_remainingPercentage > 80)
             {
                 actualImage = _spareTime;
@@ -115,85 +148,35 @@ namespace Managers
                 }
             }
             
-            // We need screen height (=bottom)
-            // minus the image loop we already displayed
-            // e.g. first one (at bottom:
-            // screenheight - 1 times the height of image
-
-            // note: we want the bar occupying 90% of height
-            // means: at 100 percent, 90% height
-            // but the bar must shrink DOWN
-            // so top position will change
-            // at 100%, we must be at 5% from top
-            // at 0% we must be at 95% from top
-
+            // Logic:
+            // 1) What is our actual top/actual height?
+            // 2) Draw our bar, bottom end is fixed
+            // top of the bar will ofcourse be decreasing
             float actualHeight = (_remainingPercentage * imageHeight);
             float actualTop = (actualBottom - actualHeight);
 
             GUI.DrawTexture(new Rect(Screen.width - maxBarWidth,
-                                     actualTop,
-                                     maxBarWidth,
-                                     actualHeight)
+				actualTop,
+				maxBarWidth,
+				actualHeight)
                             , actualImage);
+
+            // also add a nice percentage of what is "left"
             GUI.Label(new Rect(Screen.width - maxBarWidth,
-                               actualTop,
-                               maxBarWidth,
-                               actualHeight)
+				actualTop,
+				maxBarWidth,
+				actualHeight)
                       , string.Format("{0}%", _remainingPercentage), labelStyle);
-
-            // I can imagine this (old) code being horribly inefficient/slow!
-            /*for (int i = 0; i<_remainingPercentage; i++)
-            {
-                Texture2D actualImage;
-
-                GUIStyle labelStyle = new GUIStyle(GUI.skin.label);
-                labelStyle.stretchWidth = true;
-                labelStyle.stretchHeight = true;
-                labelStyle.alignment = TextAnchor.MiddleCenter;
-
-                Color oldColor = GUI.color;
-                if (i > 80)
-                {
-                    actualImage = _spareTime;
-                    GUI.color = Color.black;
-                } else
-                {
-                    if (i > 20)
-                    {
-                        actualImage = _moderateTime;
-                        GUI.color = Color.white;
-                    } else
-                    {
-                        actualImage = _shortTime;
-                        GUI.color = Color.black;
-                    }
-                }
-
-                // We need screen height (=bottom)
-                // minus the image loop we already displayed
-                // e.g. first one (at bottom:
-                // screenheight - 1 times the height of image
-                //FIXME: bar stop resizing after a while?
-                float actualHeight = (_remainingPercentage * barHeight);
-
-                GUI.DrawTexture(new Rect(Screen.width - barWidth,
-                                         Screen.height - barHeight,
-                                         barWidth,
-                                         actualHeight)
-                                , actualImage);
-                GUI.Label(new Rect(Screen.width - barWidth,
-                                   Screen.height - barHeight,
-                                   barWidth,
-                                   actualHeight)
-                          , _remainingPercentage.ToString());
-
-                // restore our default colorscheme
-                GUI.color = oldColor;
-            }*/
-            
+                            
         }
+
+        /// <summary>
+        /// Logic for when time is up
+        /// </summary>
         void TimeUp()
         {
+            // Display message about Pebos firing your ass
+            // Game ends here
             Debug.Log("TimeUp!");
         }
     }
