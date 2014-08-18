@@ -1,5 +1,11 @@
 2014-08-18  Ranu Annaert  <raan03@gmail.com>
 
+	* Managers\TitleScreen.cs:
+	* Managers\CreditsScreen.cs:
+	  
+
+2014-08-18  Ranu Annaert  <raan03@gmail.com>
+
 	* Classes\Card.cs:
 	* Classes\Card.cs~:
 	* Classes\Shared.cs:
